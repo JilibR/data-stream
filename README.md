@@ -1,15 +1,15 @@
-#**Real-Time Crypto Data Lake (Medaillon Architecture)**
+# **Real-Time Crypto Data Lake (Medaillon Architecture)**
 
 Implementing pipeline injestion streaming from Binance Websockets to DataLake local. 
 
-##**Archititecture:**
+## **Archititecture:**
 
-###**Bronze:**
+### **Bronze:**
 
 Binance WS ➡️ Python (Async) ➡️ Pydantic ➡️ Local Storage
 
 
-##**Structure Data Lake:**
+## **Structure Data Lake:**
 
 data/
 └── bronze/                     # Données brutes (JSONL)
@@ -19,16 +19,16 @@ data/
             └── ETHUSDT.jsonl
 
 
-##**Stack:**
+## **Stack:**
 
 python 3.11
 pydantic -> validation type
 polars & duckDB
 
 
-##**Roadmap & Cloud Readiness**
+## **Roadmap & Cloud Readiness**
 
-####**Project is prepared to deploy in Azure Databricks**
+#### **Project is prepared to deploy in Azure Databricks**
 
     [x] Ingestion Bronze (Local)
 
