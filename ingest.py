@@ -32,7 +32,7 @@ async def ingest_ais_stream():
     active_hour_window = None
 
     try:
-        async with websockets.connect(URL) as websocket:
+        async with websockets.connect(URL, open_timeout=10.0) as websocket:
             logging.info(f"Connected to Binance websocket...")
             while True:
                 raw_data = await websocket.recv()
@@ -73,8 +73,11 @@ async def ingest_ais_stream():
                 except ValidationError as e:
                     logging.warning(f"Message issue : {e}")
 
-    except Exception as e:
+    except websockets.exceptions.ConnectionClosed as e:
         logging.error(f"Websocket connection error: {e}")
+    except TimeoutError as e:
+        logging.error(f"Failed to connect: {e}")
+        
 
 
 if __name__ == "__main__":
