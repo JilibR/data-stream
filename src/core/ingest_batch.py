@@ -7,8 +7,14 @@ from concurrent.futures import ThreadPoolExecutor
 
 class CryptoBatchIngestor:
     """
-        Class download symbols historical data symbol.
+
+        Class download symbols historical data symbol and unzip file downloaded.
         Orchestrates multi-threaded historical data ingestion from Binance Vision.
+
+        ThreadPool:
+            - 6 workers for downloading -> put file .zip in <path>/tmp
+            - 4 workers for unzipping -> put unzip file in <path>/batch
+            
     """
 
     def __init__(self, symbols: list, days_history: int = 10):
@@ -18,10 +24,20 @@ class CryptoBatchIngestor:
         self.download_queue = Queue()
         
         # Paths management
-        self.root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        self.temp_dir = os.path.join(self.root_dir, "data", "tmp")
-        self.bronze_dir = os.path.join(self.root_dir, "data", "bronze", "batch")
+        if self._is_databricks_env():
+            self.root_dir = "/Volumes/crypto/bronze/binance_raw_data"
+            self.temp_dir = f"{self.root_dir}/tmp"
+            self.bronze_dir = f"{self.root_dir}/batch"
+        else:
+            self.root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            self.temp_dir = os.path.join(self.root_dir, "data", "tmp")
+            self.bronze_dir = os.path.join(self.root_dir, "data", "bronze", "batch")
+
         os.makedirs(self.temp_dir, exist_ok=True)
+
+    def _is_databricks_env(self):
+        # Verify if we are in Databricks workspace
+        return "DATABRICKS_RUNTIME_VERSION" in os.environ
 
     def _generate_urls(self):
         urls = []
@@ -98,7 +114,7 @@ class CryptoBatchIngestor:
             # 4. Wait for the queue to be fully processed
             self.download_queue.join()
         
-        print("[*] Batch ingestion completed.")
+        print(f"[*] Batch ingestion completed.")
 
 if __name__ == "__main__":
     # Test local
