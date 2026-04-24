@@ -19,11 +19,23 @@ data/
             └── ETHUSDT.jsonl
 
 
+
+## **Table**
+
+Ingest and move into table
+
+Bronze: crypto.bronze.crypto
+
+Transformation, Cleaning into table
+    
+Silver: crypto.silver.candle
+        crypto.silver.metrics
+
 ## **Stack:**
 
 python 3.11
 pydantic -> validation type
-polars & duckDB
+databricks
 
 
 ## **Roadmap & Cloud Readiness**
@@ -32,7 +44,7 @@ polars & duckDB
 
     [x] Ingestion Bronze (Local)
 
-    [ ] Transformation Silver (Nettoyage & Conversion Parquet via Polars)
+    [x] Transformation Silver (Nettoyage via PySpark)
 
     [ ] Calculs Gold (Corrélation inter-monnaies via DuckDB/SQL)
 
